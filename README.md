@@ -56,7 +56,7 @@ Combined fdr is estimated by using iterative semi-parametric method on the whole
 
 ```
 ems.combined = 0.1; # Convergence condition
-ppi0 = 0.3;
+ppi0 = 0.3; # Prior initial value 
 ppi1 = 0.7;
 e = 0.1:0.1:10;
 data_combined = zeros(1,length(e));
@@ -89,9 +89,9 @@ ppi1 = 0.7;
 Separate fdr is estimated by using iterative semi-parametric method on the PSMs in the group only.
 
 ```
-ppi0 = 0.3;
+ppi0 = 0.3; # Prior initial value
 ppi1 = 0.7;
-ems.separate = 0.05;
+ems.separate = 0.05; # Convergence condition
 Targetscores_group = scores.target(GroupType.target==0);
 Decoyscores_group = scores.decoy(GroupType.decoy==0);
 c = 0.5:0.1:10;
@@ -123,7 +123,7 @@ Transfer fdr is estimated based on the case selected in the first part.
 
 ```
 if CASE == 1
-    maxiter = 10000;
+    maxiter = 10000; # Convergence condition
     f0.trans = f0.combined(GroupType.target==0);
     f1.trans = f1.combined(GroupType.target==0);
     F0.trans = F0.combined(GroupType.target==0);
@@ -150,9 +150,9 @@ else
             f0.trans = f0.combined(GroupType.target==0);
             F0.trans = F0.combined(GroupType.target==0);
             
-            ppi0 = 0.3;
+            ppi0 = 0.3; # Prior initial value 
             ppi1 = 0.7;
-            ems.trans = 0.05;
+            ems.trans = 0.05; # Convergence condition
             c = 0.5:0.1:10;
             data_trans = zeros(1,length(c));
             d = 1000000000;
