@@ -4,9 +4,10 @@ Transfer fdr is the first grouped fdr estimation algorithm, which is proposed fo
 Transfer fdr derives the group null distribution through its empirical relationship with the combined null distribution, and estimates the group alternative distribution, as well as the null proportion, using an iterative semi-parametric method.
 Validated on both simulated data and real proteomic data, transfer fdr showed remarkably higher accuracy than the direct combined and separate fdr estimation methods.
 
-Tranfer fdr is implemented in the matlab programming language. The input is the Mascot(\*.dat) identifications. The output is three fdr estimation results: combined fdr, separate fdr and transfer fdr.
+Tranfer fdr is implemented in the matlab programming language. The input is the Mascot(\*.dat) identifications. The output is three fdr estimation results: combined fdr, separate fdr and transfer fdr. Here is the main function description.
 
 ## Select algorithm case:
+Four different cases are corresponding to four conditions of transfer fdr algorithm, respectively.
 Default is case 3.
 
 ```
