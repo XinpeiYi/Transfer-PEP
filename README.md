@@ -226,4 +226,4 @@ DrawingFDRfdr(FDR,FDRfdr,DecoyType.total,GroupType.total);
 # Questions and Technical Support
 If your have any questions, comments, suggestions or problems, please let us know.
 
-For more informations about transfer fdr, e.g. test data or references, see our website http://fugroup.amss.ac.cn/software/TransferFdr/TransferFdr.html.
+For more informations about transfer fdr algorithm, e.g. test data or references, see our website http://fugroup.amss.ac.cn/software/TransferFdr/TransferFdr.html.
