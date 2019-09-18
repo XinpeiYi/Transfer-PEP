@@ -1,4 +1,12 @@
-# Select algorithm case:
+# Grouped local false discovery rate estimation for peptide identification
+
+Transfer fdr is the first grouped fdr estimation algorithm, which is proposed for quality control of small groups of peptide identifications.
+Transfer fdr derives the group null distribution through its empirical relationship with the combined null distribution, and estimates the group alternative distribution, as well as the null proportion, using an iterative semi-parametric method.
+Validated on both simulated data and real proteomic data, transfer fdr showed remarkably higher accuracy than the direct combined and separate fdr estimation methods.
+
+Tranfer fdr is implemented in the matlab programming language. The input is the Mascot(\*.dat) identifications. The output is three fdr estimation results: combined fdr, separate fdr and transfer fdr.
+
+## Select algorithm case:
 Default is case 3.
 
 ```
@@ -9,12 +17,12 @@ Default is case 3.
 CASE =3;
 fdrthres = 0.01; % FDR threshold
 ```
-# Read Mascot Result
+## Read Mascot Result
 ```
 pathin = '/Users/yixinpei/PosdocResearch/Transfer fdr/code/testData/fG0!=f0_fG1!=f1';
 [result] = ReadDatResultFolder(pathin);
 ```
-# Judge Group
+## Judge Group
 ```
 % GroupType: 0 is Group; 1 is nonGroup.
 % DecoyType: 0 is Decoy; 1 is Target.
@@ -30,11 +38,11 @@ result_decoy = result_sort(DecoyType.total==0);
 [DecoyType.target,GroupType.target,scores.target,numrst.target,I.target] = JudgeGroup(result_target,TagType,DecoyTag,GroupTag);
 [DecoyType.decoy,GroupType.decoy,scores.decoy,numrst.decoy,I.decoy] = JudgeGroup(result_decoy,TagType,DecoyTag,GroupTag);
 ```
-# Compute Target-Decoy FDR
+## Compute Target-Decoy FDR
 ```
 [FDR,Iid,Threshold,FinalFDR,P] = ComputeFDR(DecoyType.total,GroupType.total,scores.total,numrst.total,I.total,fdrthres);
 ```
-# Global fdr
+## Global fdr
 ```
 ems.global = 0.1;
 ppi0 = 0.3;
@@ -66,7 +74,7 @@ ppi1 = 0.7;
 [p.global,pi0.global,pi1.global,h0.global,h1.global,f0.global,f1.global] = SemiParametricFitting(scores.decoy,scores.target,ems.global,ppi0,ppi1,hh1.global);
 [F0.global,F1.global] = ComputeF(scores.target,scores.decoy,h0.global,h1.global,p.global); 
 ```
-# Separate fdr
+## Separate fdr
 ```
 ppi0 = 0.3;
 ppi1 = 0.7;
@@ -97,7 +105,7 @@ hh1.separate = c(i-1);
 [p.separate,pi0.separate,pi1.separate,h0.separate,h1.separate,f0.separate,f1.separate] = SemiParametricFitting(Decoyscores_group,Targetscores_group,ems.separate,ppi0,ppi1,hh1.separate);
 [F0.separate,F1.separate] = ComputeF(Targetscores_group,Decoyscores_group,h0.separate,h1.separate,p.separate);    
 ```
-# Transfer fdr
+## Transfer fdr
 ```
 if CASE == 1
     maxiter = 10000;
@@ -193,7 +201,7 @@ else
     end
 end
 ```
-# Drawing the consistency between two FDR estimated methods
+## Drawing the consistency between two FDR estimated methods
 ```
 DrawingFDRfdr(FDR,FDRfdr,DecoyType.total,GroupType.total);
 ```
