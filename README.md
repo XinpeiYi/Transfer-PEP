@@ -6,7 +6,7 @@ Validated on both simulated data and real proteomic data, transfer fdr showed re
 
 Tranfer fdr is implemented in the matlab programming language. The input is the Mascot(\*.dat) identifications. The output is three fdr estimation results: combined fdr, separate fdr and transfer fdr. Here is the main function description.
 
-## Select algorithm case:
+## Select algorithm case and specify the FDR threshold:
 Four different cases are corresponding to four conditions of transfer fdr algorithm, respectively.
 Default is case 3.
 
@@ -46,46 +46,47 @@ result_decoy = result_sort(DecoyType.total==0);
 ## Compute Target-Decoy FDR
 
 In this part, the three FDR estimation methods: iCombined FDR, iSeparate FDR and iTransfer FDR are calculated.
+The output is the three FDR estimations, filtered numbers, filtered threshold and both the slope and intercept for iTransfer FDR. 
 
 ```
 [FDR,Iid,Threshold,FinalFDR,P] = ComputeFDR(DecoyType.total,GroupType.total,scores.total,numrst.total,I.total,fdrthres);
 ```
-## Global fdr
-Global fdr is estimated in this part.
+## Combined fdr
+Combined fdr is estimated by using iterative semi-parametric method on the whole set of PSMs.
 
 ```
-ems.global = 0.1;
+ems.combined = 0.1; # Convergence condition
 ppi0 = 0.3;
 ppi1 = 0.7;
 e = 0.1:0.1:10;
-data_global = zeros(1,length(e));
+data_combined = zeros(1,length(e));
 g = 1000000;
 for i = 1:length(e)
     i
-    hh1.global = e(i);
-    [p.global,pi0.global,pi1.global,h0.global,h1.global,f0.global,f1.global] = SemiParametricFitting(scores.decoy,scores.target,ems.global,ppi0,ppi1,hh1.global);
-    [F0.global,F1.global] = ComputeF(scores.target,scores.decoy,h0.global,h1.global,p.global);       
+    hh1.combined = e(i);
+    [p.combined,pi0.combined,pi1.combined,h0.combined,h1.combined,f0.combined,f1.combined] = SemiParametricFitting(scores.decoy,scores.target,ems.combined,ppi0,ppi1,hh1.combined);
+    [F0.combined,F1.combined] = ComputeF(scores.target,scores.decoy,h0.combined,h1.combined,p.combined);       
     
-    FDRfdr.global = (pi0.global*(1-F0.global))./(pi0.global*(1-F0.global)+pi1.global*(1-F1.global));
+    FDRfdr.combined = (pi0.combined*(1-F0.combined))./(pi0.combined*(1-F0.combined)+pi1.combined*(1-F1.combined));
     
-    f = sum((FDR.GF(DecoyType.total==1)-FDRfdr.global).^2);
+    f = sum((FDR.GF(DecoyType.total==1)-FDRfdr.combined).^2);
     
     if f>g
         i-1
         break;
     end
-    data_global(i) = f;
+    data_combined(i) = f;
     g = f;
 end
-hh1.global = e(i-1);
+hh1.combined = e(i-1);
 ppi0 = 0.3;
 ppi1 = 0.7;
 
-[p.global,pi0.global,pi1.global,h0.global,h1.global,f0.global,f1.global] = SemiParametricFitting(scores.decoy,scores.target,ems.global,ppi0,ppi1,hh1.global);
-[F0.global,F1.global] = ComputeF(scores.target,scores.decoy,h0.global,h1.global,p.global); 
+[p.combined,pi0.combined,pi1.combined,h0.combined,h1.combined,f0.combined,f1.combined] = SemiParametricFitting(scores.decoy,scores.target,ems.combined,ppi0,ppi1,hh1.combined);
+[F0.combined,F1.combined] = ComputeF(scores.target,scores.decoy,h0.combined,h1.combined,p.combined); 
 ```
 ## Separate fdr
-Separate fdr is estimated in this part.
+Separate fdr is estimated by using iterative semi-parametric method on the PSMs in the group only.
 
 ```
 ppi0 = 0.3;
