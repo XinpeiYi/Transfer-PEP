@@ -133,16 +133,16 @@ if CASE == 1
     DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
 else
     if CASE == 2
-        A = -(pi0.combined*(P(1))*(1-F0.combined(GroupType.target==0))+pi0.combined*(P(1)*scores.target(GroupType.target==0)+P(2)).*(-f0.global(GroupType.target==0)));
+        A = -(pi0.combined*(P(1))*(1-F0.combined(GroupType.target==0))+pi0.combined*(P(1)*scores.target(GroupType.target==0)+P(2)).*(-f0.combined(GroupType.target==0)));
         pk = sum(GroupType.target==0)/length(scores.target);
         maxiter = 10000;
         II = find(GroupType.target==0); 
-        f1.trans = f1.global(II);
+        f1.trans = f1.combined(II);
         [pi1.trans,pi0.trans] = EM_Difdis_pi(f1.trans,A,pk,scores.target,maxiter);
         f0.trans = A./(pk*pi0.trans);
         scores_group = scores.target(II);
         F1.trans = F1.combined(II);
-        F0.trans = 1-((P(1)*scores_group+P(2))*pi0.global.*(1-F0.global(II)))./(pi0.trans*pk);
+        F0.trans = 1-((P(1)*scores_group+P(2))*pi0.combined.*(1-F0.combined(II)))./(pi0.trans*pk);
         [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE2(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
         DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
     else
@@ -194,7 +194,7 @@ else
                 i
                 hh1.trans = c(i);
                 [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE4(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,A,pk);
-                [F1.trans,pi0A_1_F0A] = ComputeF_trans_CASE4(Targetscores_group,h1.trans,p.trans,P,pi0.global,F0.global(GroupType.target==0),pk);
+                [F1.trans,pi0A_1_F0A] = ComputeF_trans_CASE4(Targetscores_group,h1.trans,p.trans,P,pi0.combined,F0.combined(GroupType.target==0),pk);
                 
                 [FDRfdr.trans] = ComputelocalFDR_trans_CASE4(pi1.trans,pi0A_1_F0A,F1.trans);
                 
@@ -209,7 +209,7 @@ else
             end
             hh1.trans = c(i-1);
             [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE4(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,A,pk);
-            [F1.trans,pi0A_1_F0A] = ComputeF_trans_CASE4(Targetscores_group,h1.trans,p.trans,P,pi0.global,F0.global(GroupType.target==0),pk);
+            [F1.trans,pi0A_1_F0A] = ComputeF_trans_CASE4(Targetscores_group,h1.trans,p.trans,P,pi0.combined,F0.combined(GroupType.target==0),pk);
             [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE4(pi0,pi1,f0,f1,F0,F1,pi0A_1_F0A,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
             DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
         end
