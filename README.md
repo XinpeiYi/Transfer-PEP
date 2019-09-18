@@ -226,4 +226,4 @@ DrawingFDRfdr(FDR,FDRfdr,DecoyType.total,GroupType.total);
 # Questions and Technical Support
 If your have any questions, comments, suggestions or problems, please let us know.
 
-For other tools developed by the Fu lab, see our website http://fugroup.amss.ac.cn/people/fuyan/index_en.htm
+For other tools developed by the Yan Fu lab, see our website http://fugroup.amss.ac.cn/people/fuyan/index_en.htm
