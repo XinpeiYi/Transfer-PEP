@@ -124,16 +124,16 @@ Transfer fdr is estimated based on the case selected in the first part.
 ```
 if CASE == 1
     maxiter = 10000;
-    f0.trans = f0.global(GroupType.target==0);
-    f1.trans = f1.global(GroupType.target==0);
-    F0.trans = F0.global(GroupType.target==0);
-    F1.trans = F1.global(GroupType.target==0);
+    f0.trans = f0.combined(GroupType.target==0);
+    f1.trans = f1.combined(GroupType.target==0);
+    F0.trans = F0.combined(GroupType.target==0);
+    F1.trans = F1.combined(GroupType.target==0);
     [pi1.trans,pi0.trans] = EM_Change_Pi(f0.trans,f1.trans,scores.target(GroupType.target==0),maxiter);
     [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE1(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
     DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
 else
     if CASE == 2
-        A = -(pi0.global*(P(1))*(1-F0.global(GroupType.target==0))+pi0.global*(P(1)*scores.target(GroupType.target==0)+P(2)).*(-f0.global(GroupType.target==0)));
+        A = -(pi0.combined*(P(1))*(1-F0.combined(GroupType.target==0))+pi0.combined*(P(1)*scores.target(GroupType.target==0)+P(2)).*(-f0.global(GroupType.target==0)));
         pk = sum(GroupType.target==0)/length(scores.target);
         maxiter = 10000;
         II = find(GroupType.target==0); 
@@ -141,14 +141,14 @@ else
         [pi1.trans,pi0.trans] = EM_Difdis_pi(f1.trans,A,pk,scores.target,maxiter);
         f0.trans = A./(pk*pi0.trans);
         scores_group = scores.target(II);
-        F1.trans = F1.global(II);
+        F1.trans = F1.combined(II);
         F0.trans = 1-((P(1)*scores_group+P(2))*pi0.global.*(1-F0.global(II)))./(pi0.trans*pk);
         [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE2(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
         DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
     else
         if CASE == 3
-            f0.trans = f0.global(GroupType.target==0);
-            F0.trans = F0.global(GroupType.target==0);
+            f0.trans = f0.combined(GroupType.target==0);
+            F0.trans = F0.combined(GroupType.target==0);
             
             ppi0 = 0.3;
             ppi1 = 0.7;
@@ -187,7 +187,7 @@ else
             data_trans = zeros(1,length(c));
             d = 1000000000;
 
-            A = -(pi0.global*(P(1))*(1-F0.global(GroupType.target==0))+pi0.global*(P(1)*Targetscores_group+P(2)).*(-f0.global(GroupType.target==0)));
+            A = -(pi0.combined*(P(1))*(1-F0.combined(GroupType.target==0))+pi0.combined*(P(1)*Targetscores_group+P(2)).*(-f0.combined(GroupType.target==0)));
             pk = sum(GroupType.target==0)/length(scores.target);
 
             for i = 1:length(c)
