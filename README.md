@@ -1,4 +1,6 @@
-# Input transfer fdr case:
+# Select algorithm case:
+Default is case 3.
+
 ```
 % CASE = 1 : fG0 = f0, fG1 = f1
 % CASE = 2 : fG0 != f0, fG1 = f1
