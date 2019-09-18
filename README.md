@@ -19,11 +19,15 @@ CASE =3;
 fdrthres = 0.01; % FDR threshold
 ```
 ## Read Mascot Result
+The input is the path of Mascot identifications.
 ```
 pathin = '/Users/yixinpei/PosdocResearch/Transfer fdr/code/testData/fG0!=f0_fG1!=f1';
 [result] = ReadDatResultFolder(pathin);
 ```
 ## Judge Group
+Specify the tags for both the decoy database and the group identifications.
+The group identifications can be modification or one certain protein identifications.
+
 ```
 % GroupType: 0 is Group; 1 is nonGroup.
 % DecoyType: 0 is Decoy; 1 is Target.
@@ -40,10 +44,15 @@ result_decoy = result_sort(DecoyType.total==0);
 [DecoyType.decoy,GroupType.decoy,scores.decoy,numrst.decoy,I.decoy] = JudgeGroup(result_decoy,TagType,DecoyTag,GroupTag);
 ```
 ## Compute Target-Decoy FDR
+
+In this part, the three FDR estimation methods: iCombined FDR, iSeparate FDR and iTransfer FDR are calculated.
+
 ```
 [FDR,Iid,Threshold,FinalFDR,P] = ComputeFDR(DecoyType.total,GroupType.total,scores.total,numrst.total,I.total,fdrthres);
 ```
 ## Global fdr
+Global fdr is estimated in this part.
+
 ```
 ems.global = 0.1;
 ppi0 = 0.3;
@@ -76,6 +85,8 @@ ppi1 = 0.7;
 [F0.global,F1.global] = ComputeF(scores.target,scores.decoy,h0.global,h1.global,p.global); 
 ```
 ## Separate fdr
+Separate fdr is estimated in this part.
+
 ```
 ppi0 = 0.3;
 ppi1 = 0.7;
@@ -107,6 +118,8 @@ hh1.separate = c(i-1);
 [F0.separate,F1.separate] = ComputeF(Targetscores_group,Decoyscores_group,h0.separate,h1.separate,p.separate);    
 ```
 ## Transfer fdr
+Transfer fdr is estimated based on the case selected in the first part.
+
 ```
 if CASE == 1
     maxiter = 10000;
@@ -203,6 +216,8 @@ else
 end
 ```
 ## Drawing the consistency between two FDR estimated methods
+
+
 ```
 DrawingFDRfdr(FDR,FDRfdr,DecoyType.total,GroupType.total);
 ```
