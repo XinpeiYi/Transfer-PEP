@@ -225,6 +225,5 @@ DrawingFDRfdr(FDR,FDRfdr,DecoyType.total,GroupType.total);
 
 # Questions and Technical Support
 If your have any questions, comments, suggestions or problems, please let us know.
-Address: Academy of Mathematics and Systems Science, CAS No.55.Zhongguancun East Road, Haidian District, Beijing, China
-Postcode: 100190
-Yan Fu: yfu(at)amss.ac.cn
+
+For other tools developed by the Fu lab, see our website http://fugroup.amss.ac.cn/people/fuyan/index_en.htm
