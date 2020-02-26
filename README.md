@@ -1,13 +1,13 @@
-# Grouped local false discovery rate estimation for peptide identification
+# Transfer posterior error probability estimation for peptide identification
 
-Transfer fdr is the first grouped fdr estimation algorithm, which is proposed for quality control of small groups of peptide identifications.
-Transfer fdr derives the group null distribution through its empirical relationship with the combined null distribution, and estimates the group alternative distribution, as well as the null proportion, using an iterative semi-parametric method.
-Validated on both simulated data and real proteomic data, transfer fdr showed remarkably higher accuracy than the direct combined and separate fdr estimation methods.
+Transfer PEP is the first grouped PEP estimation algorithm, which is proposed for quality control of small groups of peptide identifications.
+Transfer PEP derives the group null distribution through its empirical relationship with the combined null distribution, and estimates the group alternative distribution, as well as the null proportion, using an iterative semi-parametric method.
+Validated on both simulated data and real proteomic data, transfer PEP showed remarkably higher accuracy than the direct combined and separate PEP estimation methods.
 
-Tranfer fdr is implemented in the matlab programming language. The input is the Mascot(\*.dat) identifications. The output is three fdr estimation results: combined fdr, separate fdr and transfer fdr. Here is the main function description.
+Tranfer PEP is implemented in the matlab programming language. The input is the Mascot(\*.dat) identifications. The output is three PEP estimation results: combined PEP, separate PEP and transfer PEP. Here is the main function description.
 
 ## Select algorithm case and specify the FDR threshold:
-Four different cases are corresponding to four conditions of transfer fdr algorithm, respectively.
+Four different cases are corresponding to four conditions of transfer PEP algorithm, respectively.
 Default is case 3.
 
 ```
@@ -21,7 +21,7 @@ fdrthres = 0.01; % FDR threshold
 ## Read Mascot Result
 The input is the path of Mascot identifications.
 ```
-pathin = '/Users/yixinpei/PosdocResearch/Transfer fdr/code/testData/fG0!=f0_fG1!=f1';
+pathin = '/Users/yixinpei/Transfer PEP/code/testData/fG0!=f0_fG1!=f1';
 [result] = ReadDatResultFolder(pathin);
 ```
 ## Judge Group
@@ -51,8 +51,8 @@ The output is the three FDR estimations, filtered numbers, filtered threshold an
 ```
 [FDR,Iid,Threshold,FinalFDR,P] = ComputeFDR(DecoyType.total,GroupType.total,scores.total,numrst.total,I.total,fdrthres);
 ```
-## Combined fdr
-Combined fdr is estimated by using iterative semi-parametric method on the whole set of PSMs.
+## Combined PEP
+Combined PEP is estimated by using iterative semi-parametric method on the whole set of PSMs.
 
 ```
 ems.combined = 0.1; # Convergence condition
@@ -67,9 +67,9 @@ for i = 1:length(e)
     [p.combined,pi0.combined,pi1.combined,h0.combined,h1.combined,f0.combined,f1.combined] = SemiParametricFitting(scores.decoy,scores.target,ems.combined,ppi0,ppi1,hh1.combined);
     [F0.combined,F1.combined] = ComputeF(scores.target,scores.decoy,h0.combined,h1.combined,p.combined);       
     
-    FDRfdr.combined = (pi0.combined*(1-F0.combined))./(pi0.combined*(1-F0.combined)+pi1.combined*(1-F1.combined));
+    FDR_PEP.combined = (pi0.combined*(1-F0.combined))./(pi0.combined*(1-F0.combined)+pi1.combined*(1-F1.combined));
     
-    f = sum((FDR.GF(DecoyType.total==1)-FDRfdr.combined).^2);
+    f = sum((FDR.GF(DecoyType.total==1)-FDR_PEP.combined).^2);
     
     if f>g
         i-1
@@ -85,8 +85,8 @@ ppi1 = 0.7;
 [p.combined,pi0.combined,pi1.combined,h0.combined,h1.combined,f0.combined,f1.combined] = SemiParametricFitting(scores.decoy,scores.target,ems.combined,ppi0,ppi1,hh1.combined);
 [F0.combined,F1.combined] = ComputeF(scores.target,scores.decoy,h0.combined,h1.combined,p.combined); 
 ```
-## Separate fdr
-Separate fdr is estimated by using iterative semi-parametric method on the PSMs in the group only.
+## Separate PEP
+Separate PEP is estimated by using iterative semi-parametric method on the PSMs in the group only.
 
 ```
 ppi0 = 0.3; # Prior initial value
@@ -103,9 +103,9 @@ for i = 1:length(c)
     [p.separate,pi0.separate,pi1.separate,h0.separate,h1.separate,f0.separate,f1.separate] = SemiParametricFitting(Decoyscores_group,Targetscores_group,ems.separate,ppi0,ppi1,hh1.separate);
     [F0.separate,F1.separate] = ComputeF(Targetscores_group,Decoyscores_group,h0.separate,h1.separate,p.separate);    
     
-    FDRfdr.separate = (pi0.separate*(1-F0.separate))./(pi0.separate*(1-F0.separate)+pi1.separate*(1-F1.separate));
+    FDR_PEP.separate = (pi0.separate*(1-F0.separate))./(pi0.separate*(1-F0.separate)+pi1.separate*(1-F1.separate));
     
-    b = sum((FDR.SF(DecoyType.total(GroupType.total==0)==1)-FDRfdr.separate).^2);
+    b = sum((FDR.SF(DecoyType.total(GroupType.total==0)==1)-FDR_PEP.separate).^2);
     
     if b>d
         i-1
@@ -118,8 +118,8 @@ hh1.separate = c(i-1);
 [p.separate,pi0.separate,pi1.separate,h0.separate,h1.separate,f0.separate,f1.separate] = SemiParametricFitting(Decoyscores_group,Targetscores_group,ems.separate,ppi0,ppi1,hh1.separate);
 [F0.separate,F1.separate] = ComputeF(Targetscores_group,Decoyscores_group,h0.separate,h1.separate,p.separate);    
 ```
-## Transfer fdr
-Transfer fdr is estimated based on the case selected in the first part.
+## Transfer PEP
+Transfer PEP is estimated based on the case selected in the first part.
 
 ```
 if CASE == 1
@@ -129,7 +129,7 @@ if CASE == 1
     F0.trans = F0.combined(GroupType.target==0);
     F1.trans = F1.combined(GroupType.target==0);
     [pi1.trans,pi0.trans] = EM_Change_Pi(f0.trans,f1.trans,scores.target(GroupType.target==0),maxiter);
-    [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE1(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
+    [PEP,FDR_PEP,Iid_PEP,Threshold_PEP,FinalFDR_PEP] = ComputePEP_CASE1(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
     DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
 else
     if CASE == 2
@@ -143,7 +143,7 @@ else
         scores_group = scores.target(II);
         F1.trans = F1.combined(II);
         F0.trans = 1-((P(1)*scores_group+P(2))*pi0.combined.*(1-F0.combined(II)))./(pi0.trans*pk);
-        [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE2(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
+        [PEP,FDR_PEP,Iid_PEP,Threshold_PEP,FinalFDR_PEP] = ComputePEP_CASE2(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
         DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
     else
         if CASE == 3
@@ -163,9 +163,9 @@ else
                 [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE3(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,f0.trans);
                 [F1.trans] = ComputeF_trans_CASE3(Targetscores_group,h1.trans,p.trans);
                 
-                [FDRfdr.trans] = ComputelocalFDR_trans_CASE3(pi0.trans,pi1.trans,F0.trans,F1.trans);
+                [FDR_PEP.trans] = ComputePEP_trans_CASE3(pi0.trans,pi1.trans,F0.trans,F1.trans);
                 
-                b = sum((FDR.TF(DecoyType.total(GroupType.total==0)==1)-FDRfdr.trans).^2);
+                b = sum((FDR.TF(DecoyType.total(GroupType.total==0)==1)-FDR_PEP.trans).^2);
                 
                 if b>d
                    i-1
@@ -177,7 +177,7 @@ else
             hh1.trans = c(i-1);
             [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE3(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,f0.trans);
             [F1.trans] = ComputeF_trans_CASE3(Targetscores_group,h1.trans,p.trans);
-            [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE3(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
+            [PEP,FDR_PEP,Iid_PEP,Threshold_PEP,FinalFDR_PEP] = ComputelocalFDR_CASE3(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
             DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
         else
             ppi0 = 0.3;
@@ -196,9 +196,9 @@ else
                 [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE4(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,A,pk);
                 [F1.trans,pi0A_1_F0A] = ComputeF_trans_CASE4(Targetscores_group,h1.trans,p.trans,P,pi0.combined,F0.combined(GroupType.target==0),pk);
                 
-                [FDRfdr.trans] = ComputelocalFDR_trans_CASE4(pi1.trans,pi0A_1_F0A,F1.trans);
+                [FDR_PEP.trans] = ComputePEP_trans_CASE4(pi1.trans,pi0A_1_F0A,F1.trans);
                 
-                b = sum((FDR.TF(DecoyType.total(GroupType.total==0)==1)-FDRfdr.trans).^2);
+                b = sum((FDR.TF(DecoyType.total(GroupType.total==0)==1)-FDR_PEP.trans).^2);
     
                 if b>d
                    i-1
@@ -210,7 +210,7 @@ else
             hh1.trans = c(i-1);
             [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE4(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,A,pk);
             [F1.trans,pi0A_1_F0A] = ComputeF_trans_CASE4(Targetscores_group,h1.trans,p.trans,P,pi0.combined,F0.combined(GroupType.target==0),pk);
-            [fdrfdr,FDRfdr,Iidfdr,Thresholdfdr,FinalFDRfdr] = ComputelocalFDR_CASE4(pi0,pi1,f0,f1,F0,F1,pi0A_1_F0A,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
+            [PEP,FDR_PEP,Iid_PEP,Threshold_PEP,FinalFDR_PEP] = ComputePEP_CASE4(pi0,pi1,f0,f1,F0,F1,pi0A_1_F0A,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
             DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
         end
     end
@@ -220,11 +220,11 @@ end
 
 
 ```
-DrawingFDRfdr(FDR,FDRfdr,DecoyType.total,GroupType.total);
+DrawingFDR_PEP(FDR,FDR_PEP,DecoyType.total,GroupType.total);
 ```
 
 
 # Questions and Technical Support
 If your have any questions, comments, suggestions or problems, please let us know.
 
-For more informations about transfer fdr algorithm, e.g. test data or references, see our website http://fugroup.amss.ac.cn/software/TransferFdr/TransferFdr.html.
+For more informations about transfer fdr algorithm, e.g. test data or references, see our website http://fugroup.amss.ac.cn/software/TransferPEP/TransferPEP.html.
