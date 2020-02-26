@@ -227,4 +227,4 @@ DrawingFDR_PEP(FDR,FDR_PEP,DecoyType.total,GroupType.total);
 # Questions and Technical Support
 If your have any questions, comments, suggestions or problems, please let us know.
 
-For more informations about transfer fdr algorithm, e.g. test data or references, see our website http://fugroup.amss.ac.cn/software/TransferPEP/TransferPEP.html.
+For more informations about transfer PEP algorithm, e.g. test data or references, see our website http://fugroup.amss.ac.cn/software/TransferPEP/TransferPEP.html.
