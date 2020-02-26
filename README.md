@@ -177,7 +177,7 @@ else
             hh1.trans = c(i-1);
             [p.trans,pi0.trans,pi1.trans,h1.trans,f0.trans,f1.trans] = SemiParametricFitting_trans_CASE3(Targetscores_group,ems.trans,ppi0,ppi1,hh1.trans,f0.trans);
             [F1.trans] = ComputeF_trans_CASE3(Targetscores_group,h1.trans,p.trans);
-            [PEP,FDR_PEP,Iid_PEP,Threshold_PEP,FinalFDR_PEP] = ComputelocalFDR_CASE3(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
+            [PEP,FDR_PEP,Iid_PEP,Threshold_PEP,FinalFDR_PEP] = ComputePEP_CASE3(pi0,pi1,f0,f1,F0,F1,I.target,fdrthres,GroupType.target,scores.target,numrst.target);
             DrawingThreeFitting(scores.target,GroupType.target,scores.decoy,GroupType.decoy,h0,h1,pi0,pi1,p,f0,f1);
         else
             ppi0 = 0.3;
